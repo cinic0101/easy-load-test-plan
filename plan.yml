@@ -1,0 +1,33 @@
+﻿# Requests per second
+rate: 1
+
+# Duration in seconds of the test [0 = forever]
+duration: 10
+
+# Default Values
+defaults:
+  token: b82d30f3f1fc4e43b3f427ba3d7b9a50
+
+# Test Requests
+requests:
+  API-POST-JSON:
+    method: POST
+    url: http://test-domain.example.com/api1/new
+    headers:
+      Content-Type: application/json
+      token: $token  # Replace from "defaults"
+    body: '{"id":1, "name": "no body"}'
+
+  API-POST-FROM:
+    method: POST
+    url: http://test-domain.example.com/api1/new
+    headers:
+      Content-Type: application/json
+      token: $token  # Replace from "defaults"
+    body: 'id=1&name=no+body'
+
+   API-GET:
+     method: GET
+     url: http://test-domain.example.com/api1/new
+     headers:
+       token: $token  # Replace from "defaults"

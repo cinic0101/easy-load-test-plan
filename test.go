@@ -74,28 +74,15 @@ func main() {
 		metrics.Close()
 
 		fmt.Printf("\n========================\n")
-		fmt.Printf("Name: %s%v%s\n", CLR_R, r, CLR_N)
+		fmt.Printf("Name: %v\n", r)
 		fmt.Printf("Requests: %v\n", metrics.Requests)
-		fmt.Printf("Success: %s%v%s\n", success(metrics.Success), metrics.Success, CLR_N)
+		fmt.Printf("Success: %v\n", metrics.Success)
 		fmt.Printf("StatusCodes: %v\n", metrics.StatusCodes)
-		fmt.Printf("Latencies[Mean,P95,P99,Max]: [%s%v%s, %v, %v, %v]\n",
-			CLR_Y, metrics.Latencies.Mean, CLR_N, metrics.Latencies.P95 , metrics.Latencies.P99, metrics.Latencies.Max)
+		fmt.Printf("Latencies[Mean,P95,P99,Max]: [%v, %v, %v, %v]\n",
+			metrics.Latencies.Mean, metrics.Latencies.P95 , metrics.Latencies.P99, metrics.Latencies.Max)
 		fmt.Printf("Errors: \n")
 		for _, e := range metrics.Errors {
 			fmt.Printf("%v\n", e)
 		}
 	}
-}
-
-const CLR_N = "\x1b[0m"
-const CLR_R = "\x1b[31;1m"
-const CLR_Y = "\x1b[33;1m"
-const CLR_C = "\x1b[36;1m"
-
-func success(success float64) string {
-	if success == 1 {
-		return CLR_C
-	}
-
-	return CLR_R
 }

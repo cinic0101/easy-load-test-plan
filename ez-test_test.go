@@ -18,10 +18,10 @@ func TestReplaceFromDefaults(t *testing.T) {
 	}
 }
 
-func TestWriteToCsv(t *testing.T) {
+func TestWriteToCSV(t *testing.T) {
 	planName := "test"
-	WriteToCsv(planName, [][]string{{"h1", "h2"}, {"r1c1", "r1c2"}})
-	os.Remove(FormatCsvName(planName))
+	WriteToCSV(planName, [][]string{{"h1", "h2"}, {"r1c1", "r1c2"}})
+	os.Remove(FormatCSVName(planName))
 }
 
 func TestDrawPlot(t *testing.T) {

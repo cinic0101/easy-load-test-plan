@@ -20,19 +20,19 @@ type TestPlan struct {
 	Duration time.Duration
 	Result struct {
 		Stdout bool
-		Csv bool
-		Plot bool
+		CSV    bool
+		Plot   bool
 	}
 	Defaults map[string]string
 	Requests map[string]Request
 }
 
 type Request struct {
-	Method string
-	Url string
+	Method  string
+	URL     string
 	Headers map[string]string
-	Body []string
-	Remark string
+	Body    []string
+	Remark  string
 }
 
 func main() {
@@ -76,7 +76,7 @@ func main() {
 			}
 		}
 
-		ReplaceFromDefaults(&r.Url, p.Defaults)
+		ReplaceFromDefaults(&r.URL, p.Defaults)
 
 		var targets []vegeta.Target
 		if len(r.Body) > 0 {
@@ -84,7 +84,7 @@ func main() {
 				ReplaceFromDefaults(&b, p.Defaults)
 				targets = append(targets, vegeta.Target{
 					Method: r.Method,
-					URL:    r.Url,
+					URL:    r.URL,
 					Header: header,
 					Body:   []byte(b),
 				})
@@ -92,7 +92,7 @@ func main() {
 		} else {
 			targets = append(targets, vegeta.Target{
 				Method: r.Method,
-				URL:    r.Url,
+				URL:    r.URL,
 				Header: header,
 			})
 		}
@@ -114,10 +114,10 @@ func main() {
 			Stdout(requestName, metrics)
 		}
 
-		if p.Result.Csv {
+		if p.Result.CSV {
 			csvRows = append(csvRows, []string{
 				requestName,
-				r.Url,
+				r.URL,
 				fmt.Sprintf("%.1f", metrics.Success * 100),
 				fmt.Sprintf("%.3f", metrics.Latencies.Mean.Seconds()),
 				fmt.Sprintf("%.3f", metrics.Latencies.Max.Seconds()),
@@ -129,10 +129,10 @@ func main() {
 		}
 	}
 
-	if p.Result.Csv {
-		header := [][]string{{ "Name", "Url", "Success(%)", "Mean(s)", "Max(s)", "Remark" }}
+	if p.Result.CSV {
+		header := [][]string{{ "Name", "URL", "Success(%)", "Mean(s)", "Max(s)", "Remark" }}
 		csvRows = append(header, csvRows...)
-		WriteToCsv(planName, csvRows)
+		WriteToCSV(planName, csvRows)
 	}
 }
 
@@ -167,12 +167,12 @@ func Stdout(requestName string, metrics vegeta.Metrics)  {
 	}
 }
 
-func FormatCsvName(planName string) string {
+func FormatCSVName(planName string) string {
 	return fmt.Sprintf("%v.csv", strings.Replace(planName, ".yml", "", 1))
 }
 
-func WriteToCsv(planName string, data [][]string) {
-	csvFileName := FormatCsvName(planName)
+func WriteToCSV(planName string, data [][]string) {
+	csvFileName := FormatCSVName(planName)
 
 	file, err := os.Create(csvFileName)
 	if err != nil {

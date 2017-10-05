@@ -1,18 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/tsenart/vegeta/lib"
 	"gopkg.in/yaml.v2"
-	"regexp"
-	"bufio"
 )
 
 type TestPlan struct {
@@ -167,8 +167,12 @@ func Stdout(requestName string, metrics vegeta.Metrics)  {
 	}
 }
 
+func FormatCsvName(planName string) string {
+	return fmt.Sprintf("%v.csv", strings.Replace(planName, ".yml", "", 1))
+}
+
 func WriteToCsv(planName string, data [][]string) {
-	csvFileName := fmt.Sprintf("%v.csv", strings.Replace(planName, ".yml", "", 1))
+	csvFileName := FormatCsvName(planName)
 
 	file, err := os.Create(csvFileName)
 	if err != nil {
@@ -185,8 +189,12 @@ func WriteToCsv(planName string, data [][]string) {
 	}
 }
 
+func FormatPlotName(planName string, plotName string) string {
+	return fmt.Sprintf("%v_%v.html", strings.Replace(planName, ".yml", "", 1), plotName)
+}
+
 func DrawPlot(planName string, plotName string, results vegeta.Results) {
-	fileName := fmt.Sprintf("%v_%v.html", strings.Replace(planName, ".yml", "", 1), plotName)
+	fileName := FormatPlotName(planName, plotName)
 
 	f, err := os.Create(fileName)
 	if err != nil {

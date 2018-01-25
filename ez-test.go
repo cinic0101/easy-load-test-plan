@@ -4,52 +4,23 @@ import (
 	"bufio"
 	"encoding/csv"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"regexp"
 	"os"
 	"strings"
 	"time"
 
+	"./ez"
 	"github.com/tsenart/vegeta/lib"
-	"gopkg.in/yaml.v2"
 )
-
-type TestPlan struct {
-	Rate uint64
-	Duration time.Duration
-	Result struct {
-		Stdout bool
-		CSV    bool
-		Plot   bool
-	}
-	Defaults map[string]string
-	Requests map[string]Request
-}
-
-type Request struct {
-	Method  string
-	URL     string
-	Headers map[string]string
-	Body    []string
-	Remark  string
-}
 
 func main() {
 	if len(os.Args) == 1 {
 		panic("No yaml file")
 	}
 
-	planName := os.Args[1]
-	buf, err := ioutil.ReadFile(planName)
-	if err != nil {
-		panic(err)
-	}
-
-	p := TestPlan{}
-	if err = yaml.Unmarshal(buf, &p); err != nil {
-		panic(err)
-	}
+	fileName := os.Args[1]
+	p := ez.NewTestPlan(fileName)
 
 	var csvRows [][]string
 	for requestName, r := range p.Requests {
@@ -125,14 +96,14 @@ func main() {
 		}
 
 		if p.Result.Plot {
-			DrawPlot(planName, requestName, results)
+			DrawPlot(fileName, requestName, results)
 		}
 	}
 
 	if p.Result.CSV {
 		header := [][]string{{ "Name", "URL", "Success(%)", "Mean(s)", "Max(s)", "Remark" }}
 		csvRows = append(header, csvRows...)
-		WriteToCSV(planName, csvRows)
+		WriteToCSV(fileName, csvRows)
 	}
 }
 

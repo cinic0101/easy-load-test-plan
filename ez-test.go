@@ -108,11 +108,11 @@ func main() {
 }
 
 func ReplaceFromDefaults(text *string, defaults map[string]string) {
-	regex := regexp.MustCompile(`(?P<key>\$[A-Za-z0-9_-]+\$)+`)
+	regex := regexp.MustCompile(`(?P<key>\${[A-Za-z0-9_-]+})+`)
 	match := regex.FindAllString(*text, -1)
 
 	for _, m := range match {
-		dKey := strings.Replace(m, "$", "", -1)
+		dKey := strings.Replace(strings.Replace(m, "${", "", -1), "}", "", -1)
 		*text = strings.Replace(*text, m, defaults[dKey], -1)
 	}
 }

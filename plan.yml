@@ -16,25 +16,25 @@ defaults:
 requests:
   API-POST-JSON:                                        # Unique API Name
     method: POST
-    url: $test-domain$/api1/new?qid=$qid$               # URL
+    url: ${test-domain}/api1/new?qid=${qid}             # URL
     headers:                                            # Headers
       Content-Type: application/json                    # JSON Body Header
-      token: $token$                                    # Replace ${key}$ to defaults.key's value
+      token: ${token}                                   # Replace ${key} to defaults.key's value
     body:                                               # Round-robins Bodies
       - '{"id":1, "name": "nobody"}'
-      - '{"id":2, "name": "$body-name$"}'
+      - '{"id":2, "name": "${body-name}"}'
 
   API-POST-FROM:
     method: POST
-    url: $test-domain$/api2/new
+    url: ${test-domain}/api2/new
     headers:
       Content-Type: application/x-www-form-urlencoded   # FORM POST Body Header
-      token: $token$
+      token: ${token}
     body:
-      - 'id=1&name=$body-name$'
+      - 'id=1&name=${body-name}'
 
   API-GET:
     method: GET
-    url: $test-domain$/api3
+    url: ${test-domain}/api3
     headers:
-      token: $token$
+      token: ${token}

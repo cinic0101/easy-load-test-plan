@@ -28,7 +28,13 @@ type Request struct {
 }
 
 func NewTestPlan(file string) *TestPlan {
-	p := &TestPlan{}
+	p := &TestPlan {
+		Result: struct {
+			Stdout bool
+			CSV    bool
+			Plot   bool
+		}{Stdout: true, CSV: true, Plot: true},
+	}
 
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {

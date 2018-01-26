@@ -1,0 +1,26 @@
+﻿rate: 1          # Requests per second
+duration: 5      # Duration in seconds of the test [0 = forever]
+
+# Default Values
+defaults:
+  test-domain: http://test.example.com
+  token: b82d30f3f1fc4e43b3f427ba3d7b9a50
+  qid: 12345
+  body-name: somebody
+
+# Test Requests
+requests:
+  API-POST-JSON:
+    method: POST
+    url: ${test-domain}/api1/new?qid=${qid}
+    headers:
+      Content-Type: application/json
+      token: ${token}
+    body:
+      - '{"id":${from.csv.id}, "name": "${from.csv.name}"}'
+
+  API-GET:
+    method: GET
+    url: ${test-domain}/api1/${from.csv.id}?name=${from.csv.name}
+    headers:
+      token: ${token}

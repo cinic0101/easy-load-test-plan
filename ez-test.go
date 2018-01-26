@@ -25,7 +25,7 @@ func main() {
 	var csvRows [][]string
 	for requestName, r := range p.Requests {
 		rate := p.Rate
-		duration := p.Duration * time.Second
+		duration := p.Duration
 
 		header := http.Header{}
 		for hk := range r.Headers {

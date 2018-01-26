@@ -1,5 +1,5 @@
 ﻿rate: 1          # Requests per second
-duration: 5      # Duration in seconds of the test [0 = forever]
+duration: 5s     # Duration in seconds of the test [0 = forever]
 result:
   stdout: true   # Stdout
   csv: true      # Generate csv report

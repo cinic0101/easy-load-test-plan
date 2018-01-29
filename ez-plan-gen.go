@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
-
-	"./ez"
-	"strings"
 	"regexp"
 	"strconv"
+	"strings"
+	"time"
+	
+	"./ez"
 )
 
 var csvs = make(map[string][]map[string]string)

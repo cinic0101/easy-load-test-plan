@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"os"
 	"strings"
-	"time"
 
 	"./ez"
 	"github.com/tsenart/vegeta/lib"

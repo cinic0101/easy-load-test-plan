@@ -19,7 +19,7 @@ func main() {
 
 	fileName := os.Args[1]
 	ap := ez.NewTestPlan(fileName)
-	file, err := os.Create(strings.Replace(fileName, ".yml", fmt.Sprintf("-%vX%v.yml", ap.Rate, ap.Duration), -1))
+	file, err := os.Create(strings.Replace(fileName, ".yml", fmt.Sprintf("-%vX%v.yml", ap.Rate, ap.Duration.Seconds()), -1))
 	if err != nil {
 		panic(err)
 	}

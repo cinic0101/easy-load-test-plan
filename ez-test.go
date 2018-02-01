@@ -137,12 +137,12 @@ func Stdout(requestName string, metrics vegeta.Metrics)  {
 	}
 }
 
-func FormatCSVName(planName string) string {
-	return fmt.Sprintf("%v.csv", strings.Replace(planName, ".yml", "", 1))
+func FormatCSVName(planFileName string) string {
+	return fmt.Sprintf("%v.csv", strings.Replace(planFileName, ".yml", "", 1))
 }
 
-func WriteToCSV(planName string, data [][]string) {
-	csvFileName := FormatCSVName(planName)
+func WriteToCSV(planFileName string, data [][]string) {
+	csvFileName := FormatCSVName(planFileName)
 
 	file, err := os.Create(csvFileName)
 	if err != nil {
@@ -159,12 +159,12 @@ func WriteToCSV(planName string, data [][]string) {
 	}
 }
 
-func FormatPlotName(planName string, plotName string) string {
-	return fmt.Sprintf("%v_%v.html", strings.Replace(planName, ".yml", "", 1), plotName)
+func FormatPlotName(planFileName string, plotName string) string {
+	return fmt.Sprintf("%v_%v.html", strings.Replace(planFileName, ".yml", "", 1), plotName)
 }
 
-func DrawPlot(planName string, plotName string, results vegeta.Results) {
-	fileName := FormatPlotName(planName, plotName)
+func DrawPlot(planFileName string, plotName string, results vegeta.Results) {
+	fileName := FormatPlotName(planFileName, plotName)
 
 	f, err := os.Create(fileName)
 	if err != nil {

@@ -66,3 +66,38 @@ requests:
     headers:
       token: ${token}
 ```
+
+## How to generate Plan.yml using csv data:
+```bash
+go run ez-plan-gen.go abstract-plan.yml
+```
+
+## Abstract-plan.yml Template:
+```YAML
+rate: 1          # Requests per second
+duration: 5s     # Duration in seconds of the test [0 = forever]
+
+# Default Values
+defaults:
+  test-domain: http://test.example.com
+  token: b82d30f3f1fc4e43b3f427ba3d7b9a50
+  qid: 12345
+  body-name: somebody
+
+# Test Requests
+requests:
+  API-POST-JSON:
+    method: POST
+    url: ${test-domain}/api1/new?qid=${qid}
+    headers:
+      Content-Type: application/json
+      token: ${token}
+    body: # Load id,name from "from.csv" into body iteratively
+      - '{"id":${from.csv.id}, "name": "${from.csv.name}"}'   
+
+  API-GET: # Generate several requests iteratively from "from.csv"
+    method: GET
+    url: ${test-domain}/api1/${from.csv.id}?name=${from.csv.name}
+    headers:
+      token: ${token}
+```

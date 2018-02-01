@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 	
 	"./ez"
 )
@@ -35,7 +34,7 @@ func main() {
 func WriteStaticFields(file *os.File, ap *ez.TestPlan) {
 	file.WriteString("\xEF\xBB\xBF") // UTF-8 BOM
 	file.WriteString(fmt.Sprintf("rate: %v\n", ap.Rate))
-	file.WriteString(fmt.Sprintf("duration: %v\n", ap.Duration * time.Second))
+	file.WriteString(fmt.Sprintf("duration: %v\n", ap.Duration))
 
 	file.WriteString("result:\n")
 	file.WriteString(fmt.Sprintf("  stdout: %v\n", ap.Result.Stdout))

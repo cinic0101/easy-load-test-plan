@@ -21,6 +21,9 @@ func main() {
 	fileName := os.Args[1]
 	p := ez.NewTestPlan(fileName)
 
+	folderName := strings.Replace(os.Args[1], ".yml", "", 1)
+	os.MkdirAll("./" + folderName, os.ModePerm)
+
 	var csvRows [][]string
 	for requestName, r := range p.Requests {
 		rate := p.Rate
@@ -95,14 +98,14 @@ func main() {
 		}
 
 		if p.Result.Plot {
-			DrawPlot(fileName, requestName, results)
+			DrawPlot(folderName, requestName, results)
 		}
 	}
 
 	if p.Result.CSV {
 		header := [][]string{{ "Name", "URL", "Success(%)", "Mean(s)", "Max(s)", "Remark" }}
 		csvRows = append(header, csvRows...)
-		WriteToCSV(fileName, csvRows)
+		WriteToCSV(folderName, csvRows)
 	}
 }
 
@@ -137,12 +140,12 @@ func Stdout(requestName string, metrics vegeta.Metrics)  {
 	}
 }
 
-func FormatCSVName(planFileName string) string {
-	return fmt.Sprintf("%v.csv", strings.Replace(planFileName, ".yml", "", 1))
+func FormatCSVName(folderName string) string {
+	return fmt.Sprintf("%v/results.csv", folderName)
 }
 
-func WriteToCSV(planFileName string, data [][]string) {
-	csvFileName := FormatCSVName(planFileName)
+func WriteToCSV(folderName string, data [][]string) {
+	csvFileName := FormatCSVName(folderName)
 
 	file, err := os.Create(csvFileName)
 	if err != nil {
@@ -159,12 +162,12 @@ func WriteToCSV(planFileName string, data [][]string) {
 	}
 }
 
-func FormatPlotName(planFileName string, plotName string) string {
-	return fmt.Sprintf("%v_%v.html", strings.Replace(planFileName, ".yml", "", 1), plotName)
+func FormatPlotName(folderName string, plotName string) string {
+	return fmt.Sprintf("%v/%v.html", folderName, plotName)
 }
 
-func DrawPlot(planFileName string, plotName string, results vegeta.Results) {
-	fileName := FormatPlotName(planFileName, plotName)
+func DrawPlot(folderName string, plotName string, results vegeta.Results) {
+	fileName := FormatPlotName(folderName, plotName)
 
 	f, err := os.Create(fileName)
 	if err != nil {

@@ -31,22 +31,9 @@ func main() {
 
 		header := http.Header{}
 		for hk := range r.Headers {
-			value := r.Headers[hk]
-			length := len(value)
-			first := string(value[0])
-			last := string(value[length-1])
-
-			if first == last && last == "$" {
-				dKey := value[1:length-1]
-
-				if val, ok := p.Defaults[dKey]; ok {
-					header.Add(hk, val)
-				} else {
-					panic(fmt.Sprintf("Can not find key \"%s\" in defaults.", dKey))
-				}
-			} else {
-				header.Add(hk, r.Headers[hk])
-			}
+			h := r.Headers[hk]
+			ReplaceFromDefaults(&h, p.Defaults)
+			header.Add(hk, h)
 		}
 
 		ReplaceFromDefaults(&r.URL, p.Defaults)

@@ -11,6 +11,8 @@ import (
 )
 
 var csvs = make(map[string][]map[string]string)
+var csvRegex = regexp.MustCompile(`\${(?P<csv>[a-zA-Z]+\.csv)\.(?P<column>[a-zA-Z]+)}`)
+var dynamicIdRegex = regexp.MustCompile(`\${(?P<prefix>[a-zA-Z]+)\[(?P<from>\d+):(?P<to>\d+)\]}`)
 
 func main() {
 	if len(os.Args) == 1 {
@@ -59,12 +61,12 @@ func WriteRequests(file *os.File, ap *ez.TestPlan) {
 
 	file.WriteString("requests:\n")
 	for n, req := range ap.Requests {
-		if strings.Contains(req.URL, ".csv.") {
-			regex := regexp.MustCompile(`\${(?P<csv>[a-zA-Z]+\.csv)\.(?P<column>[a-zA-Z]+)}`)
-			matches := regex.FindAllStringSubmatch(req.URL, -1)
+		csvMatches := csvRegex.FindAllStringSubmatch(req.URL, -1)
+		dynamicIdMatches := dynamicIdRegex.FindAllStringSubmatch(req.URL, -1)
 
+		if len(csvMatches) > 0 {
 			var rowCount int
-			for _, m := range matches {
+			for _, m := range csvMatches {
 				fileName := m[1]
 				csv, ok := csvs[fileName]
 				if !ok {
@@ -79,18 +81,32 @@ func WriteRequests(file *os.File, ap *ez.TestPlan) {
 			for i := 0; i < rowCount; i++ {
 				formattedURL := originalURL
 
-				for _, m := range matches {
+				for _, m := range csvMatches {
 					formattedURL = strings.Replace(formattedURL, m[0], csvs[m[1]][i][m[2]], -1)
 				}
 
 				req.URL = formattedURL
 				WriteRequest(file, n + "-" + strconv.Itoa(i), req)
 			}
+		} else if len(dynamicIdMatches) > 0 {
+			origin :=  dynamicIdMatches[0][0]
+			prefix := dynamicIdMatches[0][1]
+			from, _ := strconv.Atoi(dynamicIdMatches[0][2])
+			to, _ := strconv.Atoi(dynamicIdMatches[0][3])
+
+			originalURL := req.URL
+			for i := from; i <= to ; i++ {
+				formattedURL := originalURL
+				formattedURL = strings.Replace(formattedURL, origin, prefix + strconv.Itoa(i), -1)
+
+				req.URL = formattedURL
+				WriteRequest(file, n + "-" + strconv.Itoa(i), req)
+			}
+
 		} else {
 			WriteRequest(file, n, req)
 		}
 	}
-
 }
 
 func WriteRequest(file *os.File, requestName string, r ez.Request) {
@@ -110,12 +126,12 @@ func WriteRequest(file *os.File, requestName string, r ez.Request) {
 		file.WriteString("    body:\n")
 
 		for _, b := range r.Body {
-			if strings.Contains(b, ".csv.") {
-				regex := regexp.MustCompile(`\${(?P<csv>[a-zA-Z]+\.csv)\.(?P<column>[a-zA-Z]+)}`)
-				matches := regex.FindAllStringSubmatch(b, -1)
+			csvMatches := csvRegex.FindAllStringSubmatch(b, -1)
+			dynamicIdMatches := dynamicIdRegex.FindAllStringSubmatch(b, -1)
 
+			if len(csvMatches) > 0 {
 				var rowCount int
-				for _, m := range matches {
+				for _, m := range csvMatches {
 					fileName := m[1]
 					csv, ok := csvs[fileName]
 					if !ok {
@@ -130,15 +146,59 @@ func WriteRequest(file *os.File, requestName string, r ez.Request) {
 				for i := 0; i < rowCount; i++ {
 					formattedBody := originalBody
 
-					for _, m := range matches {
+					for _, m := range csvMatches {
 						formattedBody = strings.Replace(formattedBody, m[0], csvs[m[1]][i][m[2]], -1)
 					}
 
 					file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
 				}
+			} else if len(dynamicIdMatches) > 0 {
+				origin :=  dynamicIdMatches[0][0]
+				prefix := dynamicIdMatches[0][1]
+				from, _ := strconv.Atoi(dynamicIdMatches[0][2])
+				to, _ := strconv.Atoi(dynamicIdMatches[0][3])
+
+				originalBody := b
+				for i := from; i <= to ; i++ {
+					formattedBody := strings.Replace(originalBody, origin, prefix + strconv.Itoa(i), -1)
+					file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
+				}
 			} else {
 				file.WriteString(fmt.Sprintf("      - '%v'\n", b))
 			}
+
+
+
+
+			//if strings.Contains(b, ".csv.") {
+			//	regex := regexp.MustCompile(`\${(?P<csv>[a-zA-Z]+\.csv)\.(?P<column>[a-zA-Z]+)}`)
+			//	matches := regex.FindAllStringSubmatch(b, -1)
+			//
+			//	var rowCount int
+			//	for _, m := range matches {
+			//		fileName := m[1]
+			//		csv, ok := csvs[fileName]
+			//		if !ok {
+			//			csv = ez.CSVReader(fileName)
+			//			csvs[fileName] = csv
+			//		}
+			//
+			//		rowCount = len(csv)
+			//	}
+			//
+			//	originalBody := b
+			//	for i := 0; i < rowCount; i++ {
+			//		formattedBody := originalBody
+			//
+			//		for _, m := range matches {
+			//			formattedBody = strings.Replace(formattedBody, m[0], csvs[m[1]][i][m[2]], -1)
+			//		}
+			//
+			//		file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
+			//	}
+			//} else {
+			//	file.WriteString(fmt.Sprintf("      - '%v'\n", b))
+			//}
 		}
 	}
 

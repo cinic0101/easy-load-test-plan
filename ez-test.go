@@ -112,6 +112,8 @@ func Stdout(requestName string, metrics vegeta.Metrics)  {
 	fmt.Printf("Requests: %v\n", metrics.Requests)
 	fmt.Printf("Success: %v\n", metrics.Success)
 	fmt.Printf("StatusCodes: %v\n", metrics.StatusCodes)
+	fmt.Printf("ByteIn: %v\n", metrics.BytesIn.Mean)
+	fmt.Printf("ByteOut: %v\n", metrics.BytesOut.Mean)
 	fmt.Printf("Latencies[Mean,P95,P99,Max]: [%v, %v, %v, %v]\n",
 		metrics.Latencies.Mean, metrics.Latencies.P95 , metrics.Latencies.P99, metrics.Latencies.Max)
 

@@ -166,39 +166,6 @@ func WriteRequest(file *os.File, requestName string, r ez.Request) {
 			} else {
 				file.WriteString(fmt.Sprintf("      - '%v'\n", b))
 			}
-
-
-
-
-			//if strings.Contains(b, ".csv.") {
-			//	regex := regexp.MustCompile(`\${(?P<csv>[a-zA-Z]+\.csv)\.(?P<column>[a-zA-Z]+)}`)
-			//	matches := regex.FindAllStringSubmatch(b, -1)
-			//
-			//	var rowCount int
-			//	for _, m := range matches {
-			//		fileName := m[1]
-			//		csv, ok := csvs[fileName]
-			//		if !ok {
-			//			csv = ez.CSVReader(fileName)
-			//			csvs[fileName] = csv
-			//		}
-			//
-			//		rowCount = len(csv)
-			//	}
-			//
-			//	originalBody := b
-			//	for i := 0; i < rowCount; i++ {
-			//		formattedBody := originalBody
-			//
-			//		for _, m := range matches {
-			//			formattedBody = strings.Replace(formattedBody, m[0], csvs[m[1]][i][m[2]], -1)
-			//		}
-			//
-			//		file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
-			//	}
-			//} else {
-			//	file.WriteString(fmt.Sprintf("      - '%v'\n", b))
-			//}
 		}
 	}
 

@@ -86,7 +86,7 @@ defaults:
 
 # Test Requests
 requests:
-  API-POST-JSON:
+  API-POST-JSON-FROM-CSV:
     method: POST
     url: ${test-domain}/api1/new?qid=${qid}
     headers:
@@ -94,10 +94,22 @@ requests:
       token: ${token}
     body: # Load id,name from "from.csv" into body iteratively
       - '{"id":${from.csv.id}, "name": "${from.csv.name}"}'   
-
-  API-GET: # Generate several requests iteratively from "from.csv"
+  API-POST-JSON-DYNAMIC-ID:
+    method: POST
+    url: ${test-domain}/api1/new?qid=${qid}
+    headers:
+      Content-Type: application/json
+      token: ${token}
+    body: # Generate body with id from "test1" to id "test100"
+      - '{"id":${test[1:100]}, "name": "test"}'
+  API-GET-FROM-CSV: # Generate requests iteratively from "from.csv"
     method: GET
     url: ${test-domain}/api1/${from.csv.id}?name=${from.csv.name}
     headers:
       token: ${token}
+  API-GET-DYNAMIC-ID: # Generate requests with url from "/api1/test1" to "/api/test100" 
+    method: GET
+    url: ${test-domain}/api1/${test[1:100]}
+    headers:
+      token: ${token}      
 ```

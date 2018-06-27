@@ -153,14 +153,29 @@ func WriteRequest(file *os.File, requestName string, r ez.Request) {
 					file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
 				}
 			} else if len(dynamicIdMatches) > 0 {
-				origin :=  dynamicIdMatches[0][0]
-				prefix := dynamicIdMatches[0][1]
-				from, _ := strconv.Atoi(dynamicIdMatches[0][2])
-				to, _ := strconv.Atoi(dynamicIdMatches[0][3])
+				max := 0
 
-				originalBody := b
-				for i := from; i <= to ; i++ {
-					formattedBody := strings.Replace(originalBody, origin, prefix + strconv.Itoa(i), -1)
+				for _, match := range dynamicIdMatches  {
+					from, _ := strconv.Atoi(match[2])
+					to, _ := strconv.Atoi(match[3])
+					idRange := to - from
+
+					if idRange > max {
+						max = idRange
+					}
+				}
+
+				for i := 0; i <= max ; i++ {
+					var formattedBody = b
+					for _, match := range dynamicIdMatches  {
+						origin :=  match[0]
+						prefix := match[1]
+						from, _ := strconv.Atoi(match[2])
+						to, _ := strconv.Atoi(match[3])
+
+						formattedBody = strings.Replace(formattedBody, origin, prefix + IterateID(i + from, to), -1)
+					}
+
 					file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
 				}
 			} else {
@@ -170,4 +185,13 @@ func WriteRequest(file *os.File, requestName string, r ez.Request) {
 	}
 
 	file.WriteString("\n")
+}
+
+func IterateID(current int, to int) string {
+	newId := current % to
+	if newId == 0 {
+		return strconv.Itoa(to)
+	} else {
+		return strconv.Itoa(newId)
+	}
 }

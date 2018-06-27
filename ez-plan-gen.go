@@ -12,7 +12,7 @@ import (
 
 var csvs = make(map[string][]map[string]string)
 var csvRegex = regexp.MustCompile(`\${(?P<csv>[a-zA-Z1-9]+\.csv)\.(?P<column>[a-zA-Z_]+)}`)
-var dynamicIdRegex = regexp.MustCompile(`\${(?P<prefix>[a-zA-Z]+)\[(?P<from>\d+):(?P<to>\d+)\]}`)
+var dynamicIdRegex = regexp.MustCompile(`\${(?P<prefix>[a-zA-Z0-9]+)\[(?P<from>\d+):(?P<to>\d+)\]}`)
 
 func main() {
 	if len(os.Args) == 1 {

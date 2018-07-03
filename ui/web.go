@@ -12,13 +12,14 @@ func (w *Web) Start() {
 
 	router.LoadHTMLGlob("ui/templates/*")
 	router.Static("/img", "ui/content/image")
+	router.Static("/css", "ui/content/css")
 	router.GET("/", Index)
 
 	router.Run(":8081")
 }
 
 func Index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H {
+	c.HTML(http.StatusOK, "index.html", gin.H {
 		"title": "Posts",
 	})
 }

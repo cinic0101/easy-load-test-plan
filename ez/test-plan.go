@@ -10,6 +10,8 @@ import (
 type TestPlan struct {
 	Rate uint64
 	Duration time.Duration
+	Timeout *time.Duration
+	Workers *uint64
 	Result struct {
 		Stdout bool
 		CSV    bool

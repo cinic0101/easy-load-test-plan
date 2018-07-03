@@ -38,6 +38,14 @@ func WriteStaticFields(file *os.File, ap *ez.TestPlan) {
 	file.WriteString(fmt.Sprintf("rate: %v\n", ap.Rate))
 	file.WriteString(fmt.Sprintf("duration: %v\n", ap.Duration))
 
+	if ap.Timeout != nil {
+		file.WriteString(fmt.Sprintf("timeout: %v\n", *ap.Timeout))
+	}
+
+	if ap.Workers != nil {
+		file.WriteString(fmt.Sprintf("workers: %v\n", *ap.Workers))
+	}
+
 	file.WriteString("result:\n")
 	file.WriteString(fmt.Sprintf("  stdout: %v\n", ap.Result.Stdout))
 	file.WriteString(fmt.Sprintf("  csv: %v\n", ap.Result.CSV))

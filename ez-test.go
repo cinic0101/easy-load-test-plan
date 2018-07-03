@@ -60,6 +60,14 @@ func main() {
 		target := vegeta.NewStaticTargeter(targets...)
 		attacker := vegeta.NewAttacker()
 
+		if p.Timeout != nil {
+			vegeta.Timeout(*p.Timeout)(attacker)
+		}
+
+		if p.Workers != nil {
+			vegeta.Workers(*p.Workers)(attacker)
+		}
+
 		var metrics vegeta.Metrics
 		var results vegeta.Results
 		for res := range attacker.Attack(target, rate, duration) {

@@ -13,6 +13,7 @@ func (w *Web) Start() {
 	router.LoadHTMLGlob("ui/templates/*")
 	router.Static("/img", "ui/content/image")
 	router.Static("/css", "ui/content/css")
+	router.Static("/js", "ui/content/js")
 	router.GET("/", Index)
 
 	router.Run(":8081")

@@ -129,7 +129,11 @@ func Stdout(requestName string, metrics vegeta.Metrics)  {
 		fmt.Printf("Errors:\n")
 		errors := make(map[string]int)
 		for _, e := range metrics.Errors {
-			errors[e] =  errors[e] + 1
+			if i, ok := errors[e]; !ok {
+				errors[e] = 1
+			} else {
+				errors[e] = i + 1
+			}
 		}
 		for k, v := range errors {
 			fmt.Printf("%v: %v\n", k, v)

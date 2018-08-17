@@ -24,8 +24,10 @@
     $('#newProjectModal .btn-primary').click(function () {
         var id = uuidv4();
         var $modal = $('#newProjectModal');
-        var name = $modal.find("#name").val();
-        var desc = $modal.find("#description").val();
+        var $name = $modal.find("#name");
+        var $desc = $modal.find("#description");
+        var name = $name.val();
+        var desc = $desc.val();
 
         ajaxAddNewProject(id, name, desc, function (result) {
             if(!result) {
@@ -36,6 +38,8 @@
             $('#projectMenu').prepend('<li class="nav-item"><a class="nav-link list-group-item-action active" data-toggle="list" href="#t-' + id + '" role="tab">' + name + ' <span class="sr-only">(current)</span></a></li>');
             $('#mainTab').append('<div class="tab-pane active" id="t-' + id + '" role="tabpanel">' + name + '</div>');
             $modal.modal('hide');
+            $name.val('');
+            $desc.val('');
         });
     });
 

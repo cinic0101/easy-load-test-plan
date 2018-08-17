@@ -1,24 +1,28 @@
 package ui
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
+	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
-const StoragePath = "ui/plans/plans.yaml"
+const StoragePath = "ui/projects/projects.yaml"
 
 type Storage struct {
-	File TestPlans
+	AllProjects Projects
 }
 
-type TestPlans struct {
-	Plans []TestPlan
+type Projects struct {
+	Projects []TestProject
 }
 
-type TestPlan struct {
+type TestProject struct {
 	ID string
 	Name string
+	Desc string
+	Time string
 	Plan []Test
 }
 
@@ -32,7 +36,7 @@ func (s *Storage) CreateIfNotExists() {
 		return
 	}
 
-	p := &TestPlans{
+	p := &Projects{
 	}
 
 	if data, err := yaml.Marshal(p); err == nil {
@@ -41,7 +45,7 @@ func (s *Storage) CreateIfNotExists() {
 }
 
 func (s *Storage) Load() error {
-	testPlans := &TestPlans{}
+	testPlans := &Projects{}
 
 	buf, err := ioutil.ReadFile(StoragePath)
 	if err != nil {
@@ -52,24 +56,26 @@ func (s *Storage) Load() error {
 		return err
 	}
 
-	s.File = *testPlans
+	s.AllProjects = *testPlans
 
 	return err
 }
 
 func (s *Storage) Save() {
-	if data, err := yaml.Marshal(s.File); err == nil {
+	if data, err := yaml.Marshal(s.AllProjects); err == nil {
 		ioutil.WriteFile(StoragePath, data, 0777)
 	}
 }
 
-func (s *Storage) AddNewTestPlan(id string, name string)  {
+func (s *Storage) AddNewTestPlan(id string, name string, desc string) {
 	s.Load()
 
-	s.File.Plans = append(s.File.Plans, TestPlan{
+	s.AllProjects.Projects = append([]TestProject{{
 		ID: id,
 		Name: name,
-	})
+		Desc: desc,
+		Time: time.Now().Format("2006-01-02 15:04:05"),
+	}}, s.AllProjects.Projects...)
 
 	s.Save()
 }

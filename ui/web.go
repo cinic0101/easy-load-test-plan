@@ -19,6 +19,7 @@ func (w *Web) Start() {
 	router.Static("/img", "ui/content/image")
 	router.Static("/css", "ui/content/css")
 	router.Static("/js", "ui/content/js")
+	router.Static("/component", "ui/content/components")
 
 	router.GET("/", Index)
 	router.GET("/prototype", Prototype)

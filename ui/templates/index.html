@@ -72,7 +72,12 @@
              {{end}}
 
             {{range $p := .projects}}
-                <div class="tab-pane" id="t-{{$p.ID}}" role="tabpanel">{{$p.Name}}</div>
+                <div class="tab-pane" id="t-{{$p.ID}}" role="tabpanel">
+                    <button type="button" class="btn btn-primary" onclick="addNewTest(this)">New Test</button>
+                    <!-- -->
+
+                    <!-- -->
+                </div>
             {{end}}
             </div>
 

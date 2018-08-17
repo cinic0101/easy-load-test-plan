@@ -1,13 +1,21 @@
 "use strict";
 
-(function () {
-    function uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
+function addNewTest(btn) {
+    var $tab = $(btn).parent();
+    $.get("/component/test.html").done(function (data) {
+        var test = data.replace(/{{id}}/g, uuidv4());
+        $tab.append(test);
+    });
+}
+
+(function () {
     function ajaxAddNewProject(id, name, desc, callback) {
         $.ajax({
             method: "POST",

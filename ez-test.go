@@ -11,6 +11,7 @@ import (
 
 	"./ez"
 	"github.com/tsenart/vegeta/lib"
+	"strconv"
 )
 
 func main() {
@@ -50,11 +51,32 @@ func main() {
 				})
 			}
 		} else {
-			targets = append(targets, vegeta.Target{
-				Method: r.Method,
-				URL:    r.URL,
-				Header: header,
-			})
+			var dynamicIdRegex = regexp.MustCompile(`\$\${(?P<prefix>[a-zA-Z0-9]*)\[(?P<from>\d+):(?P<to>\d+)\]}`)
+			dynamicIdMatches := dynamicIdRegex.FindAllStringSubmatch(r.URL, -1)
+
+			if len(dynamicIdMatches) == 0 {
+				targets = append(targets, vegeta.Target{
+					Method: r.Method,
+					URL:    r.URL,
+					Header: header,
+				})
+			} else {
+				origin :=  dynamicIdMatches[0][0]
+				from, _ := strconv.Atoi(dynamicIdMatches[0][2])
+				to, _ := strconv.Atoi(dynamicIdMatches[0][3])
+
+				originalURL := r.URL
+				for i := from; i <= to ; i++ {
+					formattedURL := originalURL
+					formattedURL = strings.Replace(formattedURL, origin, strconv.Itoa(i), -1)
+
+					targets = append(targets, vegeta.Target{
+						Method: r.Method,
+						URL:    formattedURL,
+						Header: header,
+					})
+				}
+			}
 		}
 
 		target := vegeta.NewStaticTargeter(targets...)

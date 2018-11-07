@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=0.2
+VERSION=0.3.0
 
 # Mac OS X 64bit
 GOOS=darwin GOARCH=amd64 go build -o out/ezgen-mac64-${VERSION} ez-plan-gen.go &&

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=0.2.1
+VERSION=0.3.0
 
 # Mac OS X 64bit
 GOOS=darwin GOARCH=amd64 go build -o out/eztest-mac64-${VERSION} ez-test.go &&

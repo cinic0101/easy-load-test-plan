@@ -35,31 +35,31 @@ func main() {
 
 func WriteStaticFields(file *os.File, ap *ez.TestPlan) {
 	file.WriteString("\xEF\xBB\xBF") // UTF-8 BOM
-	file.WriteString(fmt.Sprintf("rate: %v\n", ap.Rate))
-	file.WriteString(fmt.Sprintf("duration: %v\n", ap.Duration))
+	file.WriteString(fmt.Sprintf("rate: %v\r\n", ap.Rate))
+	file.WriteString(fmt.Sprintf("duration: %v\r\n", ap.Duration))
 
 	if ap.Timeout != nil {
-		file.WriteString(fmt.Sprintf("timeout: %v\n", *ap.Timeout))
+		file.WriteString(fmt.Sprintf("timeout: %v\r\n", *ap.Timeout))
 	}
 
 	if ap.Workers != nil {
-		file.WriteString(fmt.Sprintf("workers: %v\n", *ap.Workers))
+		file.WriteString(fmt.Sprintf("workers: %v\r\n", *ap.Workers))
 	}
 
-	file.WriteString("result:\n")
-	file.WriteString(fmt.Sprintf("  stdout: %v\n", ap.Result.Stdout))
-	file.WriteString(fmt.Sprintf("  csv: %v\n", ap.Result.CSV))
-	file.WriteString(fmt.Sprintf("  plot: %v\n\n", ap.Result.Plot))
+	file.WriteString("result:\r\n")
+	file.WriteString(fmt.Sprintf("  stdout: %v\r\n", ap.Result.Stdout))
+	file.WriteString(fmt.Sprintf("  csv: %v\r\n", ap.Result.CSV))
+	file.WriteString(fmt.Sprintf("  plot: %v\r\n\r\n", ap.Result.Plot))
 
 	if len(ap.Defaults) == 0 {
 		return
 	}
 
-	file.WriteString("defaults:\n")
+	file.WriteString("defaults:\r\n")
 	for k, v := range ap.Defaults {
-		file.WriteString(fmt.Sprintf("  %v: %v\n", k, v))
+		file.WriteString(fmt.Sprintf("  %v: %v\r\n", k, v))
 	}
-	file.WriteString("\n")
+	file.WriteString("\r\n")
 }
 
 func WriteRequests(file *os.File, ap *ez.TestPlan) {
@@ -67,7 +67,7 @@ func WriteRequests(file *os.File, ap *ez.TestPlan) {
 		return
 	}
 
-	file.WriteString("requests:\n")
+	file.WriteString("requests:\r\n")
 	for n, req := range ap.Requests {
 		csvMatches := csvRegex.FindAllStringSubmatch(req.URL, -1)
 		dynamicIdMatches := dynamicIdRegex.FindAllStringSubmatch(req.URL, -1)
@@ -118,20 +118,20 @@ func WriteRequests(file *os.File, ap *ez.TestPlan) {
 }
 
 func WriteRequest(file *os.File, requestName string, r ez.Request) {
-	file.WriteString(fmt.Sprintf("  %v: \n", requestName))
-	file.WriteString(fmt.Sprintf("    method: %v\n", r.Method))
-	file.WriteString(fmt.Sprintf("    url: %v\n", r.URL))
+	file.WriteString(fmt.Sprintf("  %v: \r\n", requestName))
+	file.WriteString(fmt.Sprintf("    method: %v\r\n", r.Method))
+	file.WriteString(fmt.Sprintf("    url: %v\r\n", r.URL))
 
 	if len(r.Headers) > 0 {
-		file.WriteString("    headers:\n")
+		file.WriteString("    headers:\r\n")
 
 		for hk, hv := range r.Headers {
-			file.WriteString(fmt.Sprintf("      %v: %v\n", hk, hv))
+			file.WriteString(fmt.Sprintf("      %v: %v\r\n", hk, hv))
 		}
 	}
 
 	if len(r.Body) > 0 {
-		file.WriteString("    body:\n")
+		file.WriteString("    body:\r\n")
 
 		for _, b := range r.Body {
 			csvMatches := csvRegex.FindAllStringSubmatch(b, -1)
@@ -158,7 +158,7 @@ func WriteRequest(file *os.File, requestName string, r ez.Request) {
 						formattedBody = strings.Replace(formattedBody, m[0], csvs[m[1]][i][m[2]], -1)
 					}
 
-					file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
+					file.WriteString(fmt.Sprintf("      - '%v'\r\n", formattedBody))
 				}
 			} else if len(dynamicIdMatches) > 0 {
 				max := 0
@@ -184,15 +184,15 @@ func WriteRequest(file *os.File, requestName string, r ez.Request) {
 						formattedBody = strings.Replace(formattedBody, origin, prefix + IterateID(i + from, to), -1)
 					}
 
-					file.WriteString(fmt.Sprintf("      - '%v'\n", formattedBody))
+					file.WriteString(fmt.Sprintf("      - '%v'\r\n", formattedBody))
 				}
 			} else {
-				file.WriteString(fmt.Sprintf("      - '%v'\n", b))
+				file.WriteString(fmt.Sprintf("      - '%v'\r\n", b))
 			}
 		}
 	}
 
-	file.WriteString("\n")
+	file.WriteString("\r\n")
 }
 
 func IterateID(current int, to int) string {
